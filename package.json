@@ -13,8 +13,14 @@
     "dotenv": "^8.2.0",
     "email-validator": "^2.0.4",
     "express": "~4.16.1",
+    "fs": "^0.0.1-security",
+    "https": "^1.0.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.21",
-    "morgan": "~1.9.1"
+    "morgan": "~1.9.1",
+    "passport": "^0.4.1",
+    "passport-facebook": "^3.0.0",
+    "passport-google-oauth20": "^2.0.0",
+    "path": "^0.12.7"
   }
 }
