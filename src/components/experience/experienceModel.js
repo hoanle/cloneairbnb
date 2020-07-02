@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
-
-const schema = mongoose.Schema({
+const expSchema = mongoose.Schema({
   title: {
     type: String,
     required: [true, "Title is required"],
@@ -26,8 +25,11 @@ const schema = mongoose.Schema({
     min: 1,
     max: 5,
   },
-  imageURL: {
+  imagePath: {
     type: String,
+  },
+  description: {
+      type: String
   },
   host: {
     type: mongoose.Schema.ObjectId,
@@ -43,19 +45,7 @@ const schema = mongoose.Schema({
   ],
 });
 
-schema.statics.generateTags = async function(tags) {
-    const ltags = tags.map(e => e.toLowerCase().trim()); // trim and lowerCase all strings
-    const tagIDs = ltags.map(async e => {
-        let tag = await this.findOne({ tag: e });
-        // check if tag exists, return tag document
-        if (tag)
-            return tag
-        // else create a new tag document
-        tag = await this.create({ tag: e })
-        return tag
-    })
-    const result = Promise.all(tagIDs) // execute all promises in the array
-    return result
-}
 
-module.exports = mongoose.model("Experience", schema);
+
+module.exports = mongoose.model("Experience", expSchema);
+

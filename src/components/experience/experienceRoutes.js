@@ -1,9 +1,11 @@
-const { createExperience } = require('./experienceController')
+const { createExperience, getExperience } = require('./experienceController')
+const { loginRequired } = require('../auth/authController')
 
 const router = require('express').Router({mergeParams: true})
 
 router.route("/")
-.post(createExperience)
+.post(loginRequired,createExperience)
+.get(getExperience)
 
 
 
