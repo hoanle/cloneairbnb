@@ -3,6 +3,7 @@ var express = require("express");
 var logger = require("morgan");
 var mongoose = require("mongoose");
 const cors = require('cors')
+const passport = require('passport');
 
 var indexRouter = require("./src/routes/index");
 var userRouter = require("./src/components/user/userRoutes");
@@ -18,6 +19,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 
+app.use(passport.initialize());
 app.use("/", indexRouter);
 app.use("/users", userRouter);
 app.use('/auth', authRouter);

@@ -2,7 +2,8 @@ const { catchAsync } = require("./../error/errorController");
 const AppError = require("./../error/appError");
 const User = require("./../user/userModel");
 const bcrypt = require("bcrypt");
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
+const passport = require("./../../passport/index");
 
 exports.login = catchAsync(async (request, response, next) => {
   const { email, password } = request.body;
@@ -32,12 +33,12 @@ exports.logout = catchAsync(async (request, response, next) => {
   const token = request.token;
   const user = request.user;
 
-  user.tokens = user.tokens.filter(x => x !== token);
-  await user.save()
+  user.tokens = user.tokens.filter((x) => x !== token);
+  await user.save();
   response.status(200).json({
-      status: 'success',
-      data: null
-  })
+    status: "success",
+    data: null,
+  });
 });
 
 exports.loginRequired = catchAsync(async (request, response, next) => {
@@ -53,3 +54,27 @@ exports.loginRequired = catchAsync(async (request, response, next) => {
   request.token = token;
   next();
 });
+
+exports.loginByFacebok = passport.authenticate("facebook", {
+  scope: ["email"],
+});
+exports.facebookAuthHandler = async (request, response, next) => {
+  passport.authenticate("facebook", async (error, profile) => {
+    if (error) {
+      return response.status(400).json({
+        status: "fail",
+        message: err.message,
+      });
+    }
+    const { email, last_name, first_name } = profile._json;
+    const user = await User.findOrCreateOne({
+      email: email,
+      name: `${first_name} ${last_name}`,
+    });
+    const token = await user.generateToken();
+    response.status(200).json({
+      status: "success",
+      data: { user, token },
+    });
+  })(request, response, next);
+};

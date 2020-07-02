@@ -6,7 +6,14 @@
 
 var app = require('../app');
 var debug = require('debug')('cloneairbnb:server');
-var http = require('http');
+const fs = require('fs');
+const path = require('path');
+
+if (process.env.NODE_ENV == 'development') {
+  var http = require('https');
+} else {
+  var http = require('http');
+}
 
 /**
  * Get port from environment and store in Express.
@@ -18,8 +25,14 @@ app.set('port', port);
 /**
  * Create HTTP server.
  */
-
-var server = http.createServer(app);
+if (process.env.NODE_ENV === 'development') {
+  var server = http.createServer({
+    key: fs.readFileSync(path.join(__dirname, "./../key.pem")),
+    cert: fs.readFileSync(path.join(__dirname, "./../cert.pem"))
+  }, app);
+} else {
+  var server = http.createServer(app);
+}
 
 /**
  * Listen on provided port, on all network interfaces.
