@@ -28,3 +28,10 @@ To clone AirBnb
     >  { "status": "success", "data": null }
   - **Returns error**
     > { "code": 401, "status": "fail", "message": "Invalid token" } 
+- #### Login facebook
+  - **path**: /auth/facebook/login
+  - **params** : 
+  - **return success** : 
+    >  {"status":"success","data":{"user":{"verified":false,"role":"user","_id":"5efdf842d81331001780916b","name":"Hoan Le","email":"hoanle@gmail.com"},"token":".eyJfaWQiOiI1ZWZkZjg0MmQ4MTMzMTAwMTc4MDkxNmIiLCJpYXQiOjE1OTM3MDI1NjksImV4cCI6MTU5NDkxMjE2OX0.lj60MqeQaHPlvSuAVx9uSDcECBCoOd7Nvu-YGQV_3Qo"}}
+  - **Returns error**
+    > { "code": 400, "status": "fail", "message": "Something broken" } 
