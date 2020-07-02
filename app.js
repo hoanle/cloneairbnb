@@ -6,6 +6,7 @@ const cors = require('cors')
 
 var indexRouter = require("./src/routes/index");
 var userRouter = require("./src/components/user/userRoutes");
+var authRouter = require('./src/components/auth/authRoutes');
 var errorRouter = require("./src/components/error/errorRoutes");
 var { errorHandler } = require("./src/components/error/errorController");
 
@@ -18,6 +19,7 @@ app.use(cors());
 
 app.use("/", indexRouter);
 app.use("/users", userRouter);
+app.use('/auth', authRouter);
 app.use(errorRouter);
 app.use(errorHandler);
 
