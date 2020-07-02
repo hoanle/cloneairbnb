@@ -8,6 +8,7 @@ var indexRouter = require("./src/routes/index");
 var userRouter = require("./src/components/user/userRoutes");
 var authRouter = require('./src/components/auth/authRoutes');
 var errorRouter = require("./src/components/error/errorRoutes");
+var experienceRouter = require('./src/components/experience/experienceRoutes');
 var { errorHandler } = require("./src/components/error/errorController");
 
 var app = express();
@@ -20,11 +21,13 @@ app.use(cors());
 app.use("/", indexRouter);
 app.use("/users", userRouter);
 app.use('/auth', authRouter);
+app.use("/experiences", experienceRouter)
 app.use(errorRouter);
 app.use(errorHandler);
 
+
 mongoose
-  .connect(process.env.MONGODB_URI, {
+  .connect("mongodb://localhost:27017/week9-airbnb", {
     useCreateIndex: true,
     useNewUrlParser: true,
     useFindAndModify: false,
