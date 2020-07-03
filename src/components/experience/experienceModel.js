@@ -29,7 +29,7 @@ const expSchema = mongoose.Schema({
     type: String,
   },
   description: {
-      type: String
+    type: String,
   },
   host: {
     type: mongoose.Schema.ObjectId,
@@ -45,7 +45,4 @@ const expSchema = mongoose.Schema({
   ],
 });
 
-
-
 module.exports = mongoose.model("Experience", expSchema);
-

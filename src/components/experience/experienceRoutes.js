@@ -1,17 +1,8 @@
-const { createExperience, getExperience } = require('./experienceController')
-const { loginRequired } = require('../auth/authController')
+const { createExperience, getExperiences } = require("./experienceController");
+const { loginRequired } = require("../auth/authController");
 
-const router = require('express').Router({mergeParams: true})
+const router = require("express").Router({ mergeParams: true });
 
-router.route("/")
-.post(loginRequired,createExperience)
-.get(getExperience)
+router.route("/").post(loginRequired, createExperience).get(getExperiences);
 
-
-
-
-
-
-
-
-module.exports = router
+module.exports = router;
