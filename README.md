@@ -43,3 +43,10 @@ To clone AirBnb
     >  { "status": "success", "data": { "userList": [ { "verified": false, "role": "user", "_id": "5efd8f6dcda56f42e0ecfee9", "name": "Le Hoan", "email": "lehoan1@gmail.com" }, { "verified": false, "role": "user", "_id": "5efdf5691cb05749f99ae67a", "name": "Hoan Le", "email": "hoanle@xtaypro.com" } ] } }
   - **Returns error**
     > { "code": 400, "status": "fail", "message": "Something broken" } 
+- #### Login google
+  - **path**: /auth/google/login (GET)
+  - **params** : 
+  - **return success** : 
+    >  {"status":"success","data":{"user":{"verified":false,"role":"user","_id":"5efdf842d81331001780916b","name":"Hoan Le","email":"hoanle@gmail.com"},"token":".eyJfaWQiOiI1ZWZkZjg0MmQ4MTMzMTAwMTc4MDkxNmIiLCJpYXQiOjE1OTM3MDI1NjksImV4cCI6MTU5NDkxMjE2OX0.lj60MqeQaHPlvSuAVx9uSDcECBCoOd7Nvu-YGQV_3Qo"}}
+  - **Returns error**
+    > { "code": 400, "status": "fail", "message": "Something broken" } 

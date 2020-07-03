@@ -78,3 +78,25 @@ exports.facebookAuthHandler = async (request, response, next) => {
     });
   })(request, response, next);
 };
+
+exports.loginGoogle = passport.authenticate("google", {
+  scope: ["profile", "email"],
+});
+
+exports.googleAuthHandler = (request, response, next) => {
+  passport.authenticate("google", async (err, profile) => {
+    if (err) {
+      return response.status(400).json({
+        status: "fail",
+        message: err.message,
+      });
+    }
+    const { email, name } = profile._json;
+    const user = await User.findOrCreateOne({ email: email, name: name });
+    const token = await user.generateToken();
+    response.status(200).json({
+      status: "success",
+      data: { user, token },
+    });
+  })(request, response, next);
+};

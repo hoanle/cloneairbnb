@@ -3,7 +3,7 @@ const emailValidator = require("email-validator");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
-require('dotenv').config({path: '.env'})
+require("dotenv").config({ path: ".env" });
 
 const userSchemas = mongoose.Schema({
   name: {
@@ -85,7 +85,8 @@ userSchemas.statics.findOrCreateOne = async function (params) {
   let found = await User.findOne({ email });
   if (!found) {
     const per = User.permits(params);
-    found = await User.create({ ...per });
+    console.log(`per ${per}`);
+    found = await User.create({ ...per, role: "user" });
   }
   return found;
 };
