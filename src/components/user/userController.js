@@ -18,13 +18,13 @@ exports.createUser = catchAsync(async (request, response, next) => {
 });
 
 exports.getUserList = catchAsync(async (request, response, next) => {
-  const { role } = request.body
-  const query = (role) ? {role: role} : {} 
+  const { role } = request.body;
+  const query = role ? { role: role } : {};
   const userList = await User.find(query).limit(20);
   response.status(200).json({
-    status: 'success', 
-    data: { userList }
-  })
+    status: "success",
+    data: { userList },
+  });
 });
 
 exports.fakeUsers = catchAsync(async (request, response, next) => {
@@ -33,6 +33,10 @@ exports.fakeUsers = catchAsync(async (request, response, next) => {
   if (!role) role = "user";
 
   if (!number) number = 10;
+  let introduction = "";
+  if (role === "host") {
+    introduction = faker.lorem.paragraph();
+  }
 
   const intervalId = setInterval(async () => {
     if (i < number) {
@@ -43,6 +47,7 @@ exports.fakeUsers = catchAsync(async (request, response, next) => {
           email: faker.internet.email(),
           password: "123456789",
           role: role,
+          introduction: introduction,
         });
       } catch (error) {
         console.log();
