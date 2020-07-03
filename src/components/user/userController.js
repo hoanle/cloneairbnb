@@ -18,9 +18,9 @@ exports.createUser = catchAsync(async (request, response, next) => {
 });
 
 exports.getUserList = catchAsync(async (request, response, next) => {
-  const { role } = request.body;
+  const { role } = request.query;
   const query = role ? { role: role } : {};
-  const userList = await User.find(query).limit(20);
+  const userList = await User.find(query).limit(40).sort({ _id: -1 });
   response.status(200).json({
     status: "success",
     data: { userList },
