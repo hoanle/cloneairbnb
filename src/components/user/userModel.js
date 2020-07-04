@@ -57,6 +57,9 @@ const userSchemas = mongoose.Schema({
       type: String,
     },
   ],
+  verificationToken: {
+    type: String
+  }
 });
 
 userSchemas.methods.generateToken = async function () {
@@ -68,6 +71,16 @@ userSchemas.methods.generateToken = async function () {
   await user.save();
   return token;
 };
+
+userSchemas.methods.generateVerificationToken = async function() {
+  const user = this;
+  const token = await jwt.sign({ _id: this.id }, process.env.JWT_SECRET, {
+    expiresIn: '7d'
+  });
+  user.verificationToken = token;
+  await user.save();
+  return token;
+}
 
 userSchemas.statics.permits = function (params) {
   const permits = ["name", "email", "password", "country", "introduction"];

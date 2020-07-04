@@ -2,6 +2,7 @@ const { catchAsync } = require("./../error/errorController");
 const AppError = require("./../error/appError");
 const User = require("./userModel");
 const faker = require("faker");
+const { sendVerificationEmail } = require('./../../services/mailgunService');
 
 exports.createUser = catchAsync(async (request, response, next) => {
   const { name, email, password } = request.body;
@@ -11,6 +12,8 @@ exports.createUser = catchAsync(async (request, response, next) => {
   const permits = User.permits(request.body);
   const user = await User.create({...permits, role: "user" });
   const token = await user.generateToken();
+  const verificationToken = await user.generateVerificationToken(user);
+  sendVerificationEmail(email, verificationToken);
   response.status(200).json({
     status: "success",
     data: { user, token },

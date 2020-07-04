@@ -70,6 +70,7 @@ exports.facebookAuthHandler = async (request, response, next) => {
     const user = await User.findOrCreateOne({
       email: email,
       name: `${first_name} ${last_name}`,
+      verified: true,
     });
     const token = await user.generateToken();
     response.status(200).json({
@@ -92,7 +93,11 @@ exports.googleAuthHandler = (request, response, next) => {
       });
     }
     const { email, name } = profile._json;
-    const user = await User.findOrCreateOne({ email: email, name: name });
+    const user = await User.findOrCreateOne({
+      email: email,
+      name: name,
+      verified: true,
+    });
     const token = await user.generateToken();
     response.status(200).json({
       status: "success",
@@ -100,3 +105,26 @@ exports.googleAuthHandler = (request, response, next) => {
     });
   })(request, response, next);
 };
+
+exports.verifyEmail = catchAsync(async (request, response, next) => {
+  const { verificationToken } = request.query;
+  console.log(verificationToken);
+  if (!verificationToken) {
+    return next(new AppError(401, "Unauthorized. Token is empty"));
+  }
+  const decode = jwt.verify(verificationToken, process.env.JWT_SECRET);
+  const user = await User.findOne({
+    _id: decode._id,
+    verificationToken: verificationToken,
+  });
+  if (!user) {
+    return next(new AppError(401, "Unauthorized. Token is invalid"));
+  }
+  user.verified = true;
+  user.verificationToken = "";
+  await user.save();
+  response.status(200).json({
+    status: "success",
+    message: "User is verified",
+  });
+});

@@ -8,6 +8,7 @@ const {
   facebookAuthHandler,
   loginGoogle,
   googleAuthHandler,
+  verifyEmail
 } = require("./authController");
 
 router.route("/login").post(login);
@@ -19,4 +20,5 @@ router.route("/facebook/authorized").get(facebookAuthHandler);
 router.route("/google/login").get(loginGoogle);
 router.route("/google/authorized").get(googleAuthHandler);
 
+router.route('/verify').get(verifyEmail);
 module.exports = router;
