@@ -7,7 +7,8 @@ exports.handleNotFound = (request, response, next) => {
 exports.errorHandler = (error, request, response, next) => {
   error.status = error.status || "error";
   error.code = error.code || 500;
-  response.status(error.code).json({
+
+  response.status(error.code > 500 ? 500 : error.code).json({
     code: error.code,
     status: error.status,
     message: error.message,

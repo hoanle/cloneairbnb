@@ -8,8 +8,8 @@ exports.createUser = catchAsync(async (request, response, next) => {
   if (!name || !email || !password) {
     return next(new AppError(400, "Param is missing"));
   }
-
-  const user = await User.findOrCreateOne(request.body);
+  const permits = User.permits(request.body);
+  const user = await User.create({...permits, role: "user" });
   const token = await user.generateToken();
   response.status(200).json({
     status: "success",
