@@ -50,3 +50,11 @@ To clone AirBnb
     >  {"status":"success","data":{"user":{"verified":false,"role":"user","_id":"5efdf842d81331001780916b","name":"Hoan Le","email":"hoanle@gmail.com"},"token":".eyJfaWQiOiI1ZWZkZjg0MmQ4MTMzMTAwMTc4MDkxNmIiLCJpYXQiOjE1OTM3MDI1NjksImV4cCI6MTU5NDkxMjE2OX0.lj60MqeQaHPlvSuAVx9uSDcECBCoOd7Nvu-YGQV_3Qo"}}
   - **Returns error**
     > { "code": 400, "status": "fail", "message": "Something broken" } 
+- #### Create Experiences
+  - **path**: /experiences (POST)
+  - **params** : title, description, duration (int), price (int), languages (array, enum: ['vi', 'ko', 'en']), images (file, Optional), imageUrls (Optional, array of image url, in case images not working), tags (array of tag name, for example: "summer camp"), location
+  - **return success** : 
+    >  { "status": "OK", "data": { "nRating": 0, "imageUrls": [ "blablae", "blablae" ], "languages": [ "en", "ko" ], "tags": [ { "_id": "5f0161d44cb7617b14263c7b", "tag": "autumn camp", "__v": 0 }, { "_id": "5f0160a0be426c7a1f4f25b0", "tag": "summer camp", "__v": 0 } ], "_id": "5f01816938d7d38d8737c30c", "title": "This is an experience 4", "location": "vn", "price": 0, "duration": 60, "description": "This is a description 4", "userId": "5efd8f6dcda56f42e0ecfee9", "images": [], "__v": 0 } }
+  - **Returns error**
+    > { "code": 400, "status": "fail", "message": "Something broken" } 
+    
