@@ -93,7 +93,7 @@ userSchemas.methods.generateVerificationToken = async function () {
 };
 
 userSchemas.statics.permits = function (params) {
-  const permits = ["name", "email", "password", "country", "introduction"];
+  const permits = ["name", "email", "password", "country", "introduction", 'avatar'];
   let results = {};
   permits
     .map((p) => {
@@ -108,7 +108,6 @@ userSchemas.statics.findOrCreateOne = async function (params) {
   let found = await User.findOne({ email });
   if (!found) {
     const per = User.permits(params);
-    console.log(`per ${per}`);
     found = await User.create({ ...per, role: "user" });
   }
   return found;

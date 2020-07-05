@@ -92,11 +92,15 @@ exports.googleAuthHandler = (request, response, next) => {
         message: err.message,
       });
     }
-    const { email, name } = profile._json;
+    const { email, name, picture } = profile._json;
     const user = await User.findOrCreateOne({
       email: email,
       name: name,
       verified: true,
+      avatar: {
+        url: picture, 
+        public_id: null
+      }
     });
     const token = await user.generateToken();
     response.status(200).json({
