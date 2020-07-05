@@ -5,7 +5,7 @@ const expSchema = mongoose.Schema({
     required: [true, "Title is required"],
     trim: true,
   },
-  country: {
+  location: {
     type: String,
     required: [true, "Country is required"],
     trim: true,
@@ -19,19 +19,28 @@ const expSchema = mongoose.Schema({
     type: Number,
     required: [true, "Duration is required"],
   },
-  rating: {
+  averageRating: {
     type: Number,
-    required: [true, "Review needs a rating"],
     min: 1,
     max: 5,
+    default: 0
   },
-  imagePath: {
-    type: String,
+  nRating: {
+    type: Number,
+    default: 0
+  },
+  images: {
+    type: Array,
   },
   description: {
     type: String,
   },
-  host: {
+  languages: {
+    type: Array,
+    required: [true, "Language is required"],
+    trim: true
+  },
+  userId: {
     type: mongoose.Schema.ObjectId,
     ref: "User",
     required: [true, "Who is the host?"],
