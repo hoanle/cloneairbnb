@@ -9,7 +9,6 @@ const expSchema = mongoose.Schema({
     type: String,
     required: [true, "Country is required"],
     trim: true,
-    unique: true,
   },
   price: {
     type: Number,
@@ -23,22 +22,33 @@ const expSchema = mongoose.Schema({
     type: Number,
     min: 1,
     max: 5,
-    default: 0
   },
   nRating: {
     type: Number,
-    default: 0
+    default: 0,
   },
   images: {
-    type: Array,
+    type: [
+      {
+        url: {
+          type: String,
+        },
+        public_id: {
+          type: String,
+        },
+      },
+    ],
+    default: [],
   },
   description: {
     type: String,
+    required: [true, "Description is required"],
+    trim: true,
   },
   languages: {
     type: Array,
     required: [true, "Language is required"],
-    trim: true
+    trim: true,
   },
   userId: {
     type: mongoose.Schema.ObjectId,
