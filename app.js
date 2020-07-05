@@ -10,6 +10,7 @@ var userRouter = require("./src/components/user/userRoutes");
 var authRouter = require("./src/components/auth/authRoutes");
 var errorRouter = require("./src/components/error/errorRoutes");
 var experienceRouter = require("./src/components/experience/experienceRoutes");
+var tagRouter = require("./src/components/tag/tagRoutes");
 var { errorHandler } = require("./src/components/error/errorController");
 
 var app = express();
@@ -24,6 +25,7 @@ app.use("/", indexRouter);
 app.use("/users", userRouter);
 app.use("/auth", authRouter);
 app.use("/experiences", experienceRouter);
+app.use("/tags", tagRouter);
 app.use(errorRouter);
 app.use(errorHandler);
 

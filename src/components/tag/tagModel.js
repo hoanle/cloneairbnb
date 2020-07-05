@@ -33,5 +33,12 @@ TagSchema.statics.findTags = async function(tags) {
   return results;
 };
 
+TagSchema.methods.toJSON = function () {
+  const tag = this;
+  const tagObject = tag.toObject();
+  delete tagObject.__v;
+  return tagObject;
+};
+
 const Tag = mongoose.model("Tag", TagSchema);
 module.exports = Tag;

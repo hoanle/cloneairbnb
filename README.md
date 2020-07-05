@@ -58,9 +58,16 @@ To clone AirBnb
   - **Returns error**
     > { "code": 400, "status": "fail", "message": "Something broken" } 
 - #### Get Experience List
-  - **path**: /experiences (POST)
+  - **path**: /experiences (GET)
   - **params** : tags, seperated by ','. For example: /experiences?tags=summer,winter,spring
   - **return success** : 
     >  { "status": "OK", "data": [ { "nRating": 0, "imageUrls": [], "languages": [ "en", "ko" ], "tags": [ { "_id": "5f0161d44cb7617b14263c7b", "tag": "autumn camp" }, { "_id": "5f0160a0be426c7a1f4f25b0", "tag": "summer camp" } ], "_id": "5f017b01600f4c8c48c41322", "title": "This is an experience 4", "location": "vn", "price": 0, "duration": 60, "description": "This is a description 4", "userId": { "_id": "5efd8f6dcda56f42e0ecfee9", "name": "Le Hoan" }, "images": [], "__v": 0 }, { "nRating": 0, "imageUrls": [], "languages": [ "en", "ko" ], "tags": [ { "_id": "5f0161d44cb7617b14263c7b", "tag": "autumn camp" }, { "_id": "5f0160a0be426c7a1f4f25b0", "tag": "summer camp" } ], "_id": "5f017b54b298d58c56bd5ff3", "title": "This is an experience 4", "location": "vn", "price": 0, "duration": 60, "description": "This is a description 4", "userId": { "_id": "5efd8f6dcda56f42e0ecfee9", "name": "Le Hoan" }, "images": [], "__v": 0 }, { "nRating": 0, "imageUrls": [ "blablae", "blablae" ], "languages": [ "en", "ko" ], "tags": [ { "_id": "5f0161d44cb7617b14263c7b", "tag": "autumn camp" }, { "_id": "5f0160a0be426c7a1f4f25b0", "tag": "summer camp" } ], "_id": "5f01816938d7d38d8737c30c", "title": "This is an experience 4", "location": "vn", "price": 0, "duration": 60, "description": "This is a description 4", "userId": { "_id": "5efd8f6dcda56f42e0ecfee9", "name": "Le Hoan" }, "images": [], "__v": 0 } ] }
+  - **Returns error**
+    > { "code": 400, "status": "fail", "message": "Something broken" } 
+- #### Get Tag List
+  - **path**: /tags (GET)
+  - **params** : 
+  - **return success** : 
+    >  { "status": "success", "data": [ { "_id": "5f0160a0be426c7a1f4f25af", "tag": "winter camp" }, { "_id": "5f0160a0be426c7a1f4f25b0", "tag": "summer camp" }, { "_id": "5f0161452d8ca57ad0a4a8e3", "tag": "spring camp" }, { "_id": "5f0161d44cb7617b14263c7b", "tag": "autumn camp" }, { "_id": "5f019cdff0aebb943f606baf", "tag": "cooking" }, { "_id": "5f019cdff0aebb943f606bb0", "tag": "dinner" } ] }
   - **Returns error**
     > { "code": 400, "status": "fail", "message": "Something broken" } 
