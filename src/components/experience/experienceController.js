@@ -4,7 +4,7 @@ const AppError = require("./../error/appError");
 
 const { catchAsync } = require("./../error/errorController");
 const fs = require("fs");
-const cloudinary = require("../../services/cloudinary");
+const cloudinary = require("./../../services/cloudinary");
 
 exports.createExperience = catchAsync(async function (req, res, next) {
   const {
@@ -14,8 +14,7 @@ exports.createExperience = catchAsync(async function (req, res, next) {
     duration,
     description,
     tags,
-    images,
-    languages
+    languages,
   } = req.body;
   if (
     !title ||
@@ -43,6 +42,11 @@ exports.createExperience = catchAsync(async function (req, res, next) {
     tags: tagsObj,
   });
 
+  if (req.files) {
+    let urls = await cloudinary.uploadsMultiFiles(req.files, "Images");
+    exp.images = urls;
+  }
+
   await exp.save();
   return res.status(200).json({
     status: "OK",
@@ -68,32 +72,23 @@ exports.getExperiences = catchAsync(async function (req, res) {
   res.status(200).json({ status: "OK", data: experienceList });
 });
 
-exports.uploadExpImages = async (req, res) => {
-  console.log(req.files)
-  const uploader = async (path) => await cloudinary.uploads(path, "Images");
+exports.uploadExpImages = catchAsync(async (req, res, next) => {
   const urls = [];
-  if (req.method === "POST") {
-    const files = req.files;
-    for (const file of files) {
-      const { path } = file;
-      const newPath = await uploader(path);
-      urls.push(newPath);
-      fs.unlinkSync(path);
-    }
-
-    const exp = await Experience.findOne({ _id: req.body.id });
-    exp.images.forEach(element => {
-      exp.images.push(element)
-    });
-    // console.log(exp.images)
-    await exp.save();
-    res.status(200).json({
-      message: "images uploaded successfully",
-      data: urls,
-    });
-  } else {
-    res.status(405).json({
-      err: `${req.method} method not allowed`,
-    });
+  const files = req.files;
+  for (const file of files) {
+    const { path } = file;
+    const newPath = await cloudinary.uploads(path, "Images");
+    urls.push(newPath);
+    fs.unlinkSync(path);
   }
-};
+
+  const exp = await Experience.findOne({ _id: req.body.id });
+  exp.images.forEach((element) => {
+    exp.images.push(element);
+  });
+  await exp.save();
+  res.status(200).json({
+    message: "images uploaded successfully",
+    data: urls,
+  });
+});
