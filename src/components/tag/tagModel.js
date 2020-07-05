@@ -21,5 +21,17 @@ TagSchema.statics.generateTags = async function (tags) {
   return result;
 };
 
+TagSchema.statics.findTags = async function(tags) {
+  const lowerCaseTag = tags.map((x) => decodeURI(x).toLowerCase().trim());
+  const tagIds = lowerCaseTag
+    .map(async (t) => {
+      let tag = await Tag.findOne({ tag: t });
+      return tag;
+    })
+    .filter(Boolean);
+  const results = Promise.all(tagIds);
+  return results;
+};
+
 const Tag = mongoose.model("Tag", TagSchema);
 module.exports = Tag;

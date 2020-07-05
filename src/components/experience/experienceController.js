@@ -15,26 +15,31 @@ exports.createExperience = catchAsync(async function (req, res, next) {
     description,
     tags,
     images,
+    languages,
   } = req.body;
-  if (!title || !description || !tags) {
+  if (
+    !title ||
+    !description ||
+    !tags ||
+    !duration ||
+    !location ||
+    !price ||
+    !languages
+  ) {
     return next(
-      new AppError(400, "Title, description, host and tags are required")
+      new AppError(
+        400,
+        "Title, description, tags, duration, location, price and languages are required"
+      )
     );
   }
 
   const tagsObj = await Tag.generateTags(tags);
-  const exp = new Experience({
-    title,
-    location,
-    price,
-    duration,
-    tags: tagsObj,
-    description: description,
-    userId: req.user._id,
-  });
+  const permits = Experience.permits(req.body);
+
+  const exp = new Experience({...permits, userId: req.user._id, tags: tagsObj });
 
   if (images) {
-    const imageName = images.split("/");
     const item = await cloudinary.v2.uploader.upload(images, {
       use_filename: true,
     });
@@ -45,17 +50,25 @@ exports.createExperience = catchAsync(async function (req, res, next) {
   }
 
   await exp.save();
-  res.status(200).json({ status: "OK", data: exp }).send(exp);
+  return res.status(200).json({ status: "OK", data: exp });
 });
 
-exports.getExperiences = async function (req, res) {
-  try {
-    const exp = await Experience.find({});
-    res.status(200).json({ status: "OK", data: exp });
-  } catch (err) {
-    res.status(400).json({ status: "NOT OK!", error: err.message });
+exports.getExperiences = catchAsync(async function (req, res) {
+  const tags = req.query.tags;
+  let experienceList;
+  if (!tags) {
+    experienceList = await Experience.find({}).populate("tags", "tag");
+  } else {
+    const tagArray = tags.split(",");
+    const tagsObjects = await Tag.findTags(tagArray);
+    const tagIds = tagsObjects.filter(Boolean).map((x) => x._id);
+    experienceList = await Experience.find({ tags: { $in: tagIds } }).populate(
+      "tags",
+      "tag"
+    );
   }
-};
+  res.status(200).json({ status: "OK", data: experienceList });
+});
 
 exports.uploadExpImages = async (req, res) => {
   console.log(req.body);

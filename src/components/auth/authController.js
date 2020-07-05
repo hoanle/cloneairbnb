@@ -128,3 +128,14 @@ exports.verifyEmail = catchAsync(async (request, response, next) => {
     message: "User is verified",
   });
 });
+
+exports.shouldBeHost = catchAsync(async (request, response, next) => {
+  const user = request.user;
+  if (user.role !== "host") {
+    return response.status(401).json({
+      status: "fail",
+      message: "Unauthorized. You are not a host.",
+    });
+  }
+  next();
+});

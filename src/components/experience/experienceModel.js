@@ -46,9 +46,13 @@ const expSchema = mongoose.Schema({
     trim: true,
   },
   languages: {
-    type: Array,
+    type: [
+      {
+        type: String,
+        enum: ["vi", "en", "ko"],
+      },
+    ],
     required: [true, "Language is required"],
-    trim: true,
   },
   userId: {
     type: mongoose.Schema.ObjectId,
@@ -63,5 +67,24 @@ const expSchema = mongoose.Schema({
     },
   ],
 });
+
+expSchema.statics.permits = function (params) {
+  const permits = [
+    "title",
+    "location",
+    "price",
+    "duration",
+    "description",
+    "languages",
+    "userId",
+  ];
+  let results = {};
+  permits
+    .map((p) => {
+      if (params[p]) results[p] = params[p];
+    })
+    .filter(Boolean);
+  return results;
+};
 
 module.exports = mongoose.model("Experience", expSchema);
