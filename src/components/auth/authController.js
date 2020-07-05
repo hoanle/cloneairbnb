@@ -56,21 +56,25 @@ exports.loginRequired = catchAsync(async (request, response, next) => {
 });
 
 exports.loginByFacebok = passport.authenticate("facebook", {
-  scope: ["email"],
+  scope: ["email", 'public_profile'],
 });
 exports.facebookAuthHandler = async (request, response, next) => {
   passport.authenticate("facebook", async (error, profile) => {
     if (error) {
       return response.status(400).json({
         status: "fail",
-        message: err.message,
+        message: error.message,
       });
     }
-    const { email, last_name, first_name } = profile._json;
+    const { email, last_name, first_name, picture } = profile._json;
     const user = await User.findOrCreateOne({
       email: email,
       name: `${first_name} ${last_name}`,
       verified: true,
+      avatar: {
+        url: picture.data.url, 
+        public_id: null
+      }
     });
     const token = await user.generateToken();
     response.status(200).json({
