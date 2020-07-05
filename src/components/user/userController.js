@@ -3,6 +3,7 @@ const AppError = require("./../error/appError");
 const User = require("./userModel");
 const faker = require("faker");
 const { sendVerificationEmail } = require('./../../services/mailgunService');
+const cloudinary = require("./../../services/cloudinary");
 
 exports.createUser = catchAsync(async (request, response, next) => {
   const { name, email, password } = request.body;
@@ -14,6 +15,13 @@ exports.createUser = catchAsync(async (request, response, next) => {
   const token = await user.generateToken();
   const verificationToken = await user.generateVerificationToken(user);
   sendVerificationEmail(email, verificationToken);
+
+  if (request.files && request.files.length > 0) {
+    let avatar = await cloudinary.uploadSingleFile(request.files[0].path, "Images");
+    user.avatar = avatar;
+    user.save();
+  }
+
   response.status(200).json({
     status: "success",
     data: { user, token },
