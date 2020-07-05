@@ -43,15 +43,6 @@ exports.createExperience = catchAsync(async function (req, res, next) {
     tags: tagsObj,
   });
 
-  if (images) {
-    const item = await cloudinary.v2.uploader.upload(images, {
-      use_filename: true,
-    });
-    exp.images.push({
-      url: item.url,
-      public_id: item.public_id,
-    });
-  }
   await exp.save();
   return res.status(200).json({
     status: "OK",
@@ -78,6 +69,7 @@ exports.getExperiences = catchAsync(async function (req, res) {
 });
 
 exports.uploadExpImages = async (req, res) => {
+  console.log(req.files)
   const uploader = async (path) => await cloudinary.uploads(path, "Images");
   const urls = [];
   if (req.method === "POST") {
@@ -90,7 +82,10 @@ exports.uploadExpImages = async (req, res) => {
     }
 
     const exp = await Experience.findOne({ _id: req.body.id });
-    exp.images.push(urls);
+    exp.images.forEach(element => {
+      exp.images.push(element)
+    });
+    // console.log(exp.images)
     await exp.save();
     res.status(200).json({
       message: "images uploaded successfully",
