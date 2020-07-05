@@ -37,7 +37,11 @@ exports.createExperience = catchAsync(async function (req, res, next) {
   const tagsObj = await Tag.generateTags(tags);
   const permits = Experience.permits(req.body);
 
-  const exp = new Experience({...permits, userId: req.user._id, tags: tagsObj });
+  const exp = new Experience({
+    ...permits,
+    userId: req.user._id,
+    tags: tagsObj,
+  });
 
   if (images) {
     const item = await cloudinary.v2.uploader.upload(images, {
@@ -48,34 +52,35 @@ exports.createExperience = catchAsync(async function (req, res, next) {
       public_id: item.public_id,
     });
   }
-
   await exp.save();
-  return res.status(200).json({ status: "OK", data: exp });
+  return res.status(200).json({
+    status: "OK",
+    data: exp,
+  });
 });
 
 exports.getExperiences = catchAsync(async function (req, res) {
   const tags = req.query.tags;
   let experienceList;
   if (!tags) {
-    experienceList = await Experience.find({}).populate("tags", "tag");
+    experienceList = await Experience.find({})
+      .populate("tags", "tag")
+      .populate("userId", "name");
   } else {
     const tagArray = tags.split(",");
     const tagsObjects = await Tag.findTags(tagArray);
     const tagIds = tagsObjects.filter(Boolean).map((x) => x._id);
-    experienceList = await Experience.find({ tags: { $in: tagIds } }).populate(
-      "tags",
-      "tag"
-    );
+    experienceList = await Experience.find({ tags: { $in: tagIds } })
+      .populate("tags", "tag")
+      .populate("userId", "name");
   }
   res.status(200).json({ status: "OK", data: experienceList });
 });
 
 exports.uploadExpImages = async (req, res) => {
-  console.log(req.body);
   const uploader = async (path) => await cloudinary.uploads(path, "Images");
-
+  const urls = [];
   if (req.method === "POST") {
-    const urls = [];
     const files = req.files;
     for (const file of files) {
       const { path } = file;
@@ -84,6 +89,9 @@ exports.uploadExpImages = async (req, res) => {
       fs.unlinkSync(path);
     }
 
+    const exp = await Experience.findOne({ _id: req.body.id });
+    exp.images.push(urls);
+    await exp.save();
     res.status(200).json({
       message: "images uploaded successfully",
       data: urls,
