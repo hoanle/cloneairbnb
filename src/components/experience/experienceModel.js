@@ -40,6 +40,11 @@ const expSchema = mongoose.Schema({
     ],
     default: [],
   },
+  imageUrls: [
+    {
+      type: String,
+    },
+  ],
   description: {
     type: String,
     required: [true, "Description is required"],
@@ -77,6 +82,7 @@ expSchema.statics.permits = function (params) {
     "description",
     "languages",
     "userId",
+    "imageUrls"
   ];
   let results = {};
   permits

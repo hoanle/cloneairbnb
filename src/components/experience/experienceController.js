@@ -15,7 +15,7 @@ exports.createExperience = catchAsync(async function (req, res, next) {
     description,
     tags,
     images,
-    languages,
+    languages
   } = req.body;
   if (
     !title ||
