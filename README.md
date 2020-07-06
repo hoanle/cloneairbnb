@@ -88,7 +88,7 @@ To clone AirBnb
     >  { "status": "success", "data": { "experience": { "nRating": 0, "imageUrls": [], "languages": [], "tags": [ { "_id": "5f0160a0be426c7a1f4f25af", "tag": "winter camp" }, { "_id": "5f0161452d8ca57ad0a4a8e3", "tag": "spring camp" } ], "groupSize": 1, "_id": "5f0161bd4cb7617b14263c79", "title": "This is an experience 2", "location": "vn", "price": 200, "duration": 60, "description": "This is a description 2", "userId": { "_id": "5efd8f6dcda56f42e0ecfee9", "name": "Le Hoan" }, "images": [], "__v": 0 } } }
   - **Returns error**
     > { "code": 404, "status": "fail", "message": "Can not find experience with id 5f0161bd4cb7617b14263e79" }
-- #### Update experience detaul
+- #### Update experience detail
   - **path**: /experiences/:experienceId (PUT)
   - **params** :  title, location, price, duration, description, tags, languages, groupSize,
   - **sample request**: https://localhost:5000/experiences/5f0161bd4cb7617b14263c79
