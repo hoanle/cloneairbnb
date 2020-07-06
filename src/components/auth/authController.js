@@ -7,7 +7,8 @@ const passport = require("./../../passport/index");
 
 exports.login = catchAsync(async (request, response, next) => {
   const { email, password } = request.body;
-
+  console.log(email);
+  console.log(password);
   if (!email || !password) {
     return next(new AppError(400, "Email or password is missing"));
   }

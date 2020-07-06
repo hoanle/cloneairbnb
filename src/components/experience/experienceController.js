@@ -367,3 +367,50 @@ exports.createFakeExperiences = catchAsync(async (request, response, next) => {
     message: `Created ${number} fake experiences`,
   });
 });
+
+exports.updateExperience = catchAsync(async (request, response, next) => {
+  const {
+    title,
+    location,
+    price,
+    duration,
+    description,
+    tags,
+    languages,
+    groupSize,
+  } = request.body;
+
+  const experience = request.experience;
+  if (title) {
+    experience.title = title;
+  }
+  if (location) {
+    experience.location = location;
+  }
+  if (price && parseInt(price) > 0) {
+    experience.price = parseInt(price);
+  }
+  if (duration && parseInt(duration) > 0) {
+    experience.duration = parseInt(duration);
+  }
+  if (description) {
+    experience.description = description;
+  }
+  if (groupSize && parseInt(groupSize) > 0) {
+    experience.groupSize = groupSize;
+  }
+  if (tags) {
+    const tagsObj = await Tag.generateTags(tags);
+    experience.tags = tagsObj;
+  }
+  if (languages) {
+    experience.languages = languages;
+  }
+
+  await experience.save();
+
+  response.status(200).json({
+    status: "success",
+    data: experience,
+  });
+});
