@@ -63,10 +63,14 @@ const MAX_ITEMS= 10;
 
 exports.getExperiences = catchAsync(async function (req, res) {
   const page = req.query.page || 1;
+  const minPrice = req.query.minPrice;
+  const maxPrice = req.query.maxPrice;
   const tags = req.query.tags;
   let experienceList;
   if (!tags) {
-    experienceList = await Experience.find({})
+    experienceList = await Experience.find({
+      price: {$gt: minPrice, $lt: maxPrice}
+    })
       .populate("tags", "tag")
       .populate("userId", "name")
       .limit(MAX_ITEMS)
@@ -75,7 +79,7 @@ exports.getExperiences = catchAsync(async function (req, res) {
     const tagArray = tags.split(",");
     const tagsObjects = await Tag.findTags(tagArray);
     const tagIds = tagsObjects.filter(Boolean).map((x) => x._id);
-    experienceList = await Experience.find({ tags: { $in: tagIds } })
+    experienceList = await Experience.find({ tags: { $in: tagIds }, price: {$gt: minPrice, $lt: maxPrice} })
       .populate("tags", "tag")
       .populate("userId", "name")
       .limit(MAX_ITEMS)
