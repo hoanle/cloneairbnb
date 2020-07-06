@@ -75,7 +75,9 @@ exports.getExperiences = catchAsync(async function (req, res) {
       .populate("tags", "tag")
       .populate("userId", "name");
   }
-  res.status(200).json({ status: "OK", data: experienceList });
+  const maxNumber = await Experience.countDocuments();
+  console.log(maxNumber);
+  res.status(200).json({ status: "OK", data: { experienceList, maxNumber } });
 });
 
 exports.uploadExpImages = catchAsync(async (req, res, next) => {
@@ -109,7 +111,8 @@ exports.searchExperiences = catchAsync(async (request, response, next) => {
     languages,
     averageRatingMin,
     groupSizeMax,
-    page
+    page,
+    perPage,
   } = request.query;
   let queries = [];
   if (tags) {
@@ -148,19 +151,21 @@ exports.searchExperiences = catchAsync(async (request, response, next) => {
     let groupSizeQuery = { groupSize: { $lte: groupSizeMax } };
     queries.push(groupSizeQuery);
   }
-  console.log(queries);
   const finalQuery = queries.length == 0 ? {} : { $and: queries };
-  const pageNum = page || 1;
-  const skip = (pageNum - 1) * Globals.perPage;
+  const pageNum = parseInt(page) || 1;
+  const perPageNum = parseInt(perPage) || Globals.perPage;
+  const skip = (pageNum - 1) * perPageNum;
   const experienceList = await Experience.find(finalQuery)
     .skip(skip)
-    .limit(Globals.perPage)
+    .limit(perPageNum)
     .populate("tags", "tag")
     .populate("host", "name");
-
+  const maxCount = await Experience.countDocuments();
+  const totalPages = Math.floor((maxCount - 1) / perPageNum) + 1;
+  let pagination = { pageNum, perPageNum, totalPages };
   response.status(200).json({
     status: "success",
-    data: experienceList,
+    data: { experienceList, pagination },
   });
 });
 
