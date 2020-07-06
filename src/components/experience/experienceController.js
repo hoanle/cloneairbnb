@@ -6,6 +6,9 @@ const { catchAsync } = require("./../error/errorController");
 const fs = require("fs");
 const cloudinary = require("./../../services/cloudinary");
 
+
+
+
 exports.createExperience = catchAsync(async function (req, res, next) {
   const {
     title,
@@ -54,22 +57,32 @@ exports.createExperience = catchAsync(async function (req, res, next) {
   });
 });
 
+
+
+const MAX_ITEMS= 10;
+
 exports.getExperiences = catchAsync(async function (req, res) {
+  const page = req.query.page || 1;
   const tags = req.query.tags;
   let experienceList;
   if (!tags) {
     experienceList = await Experience.find({})
       .populate("tags", "tag")
-      .populate("userId", "name");
+      .populate("userId", "name")
+      .limit(MAX_ITEMS)
+      .skip((page-1)*MAX_ITEMS);
   } else {
     const tagArray = tags.split(",");
     const tagsObjects = await Tag.findTags(tagArray);
     const tagIds = tagsObjects.filter(Boolean).map((x) => x._id);
     experienceList = await Experience.find({ tags: { $in: tagIds } })
       .populate("tags", "tag")
-      .populate("userId", "name");
+      .populate("userId", "name")
+      .limit(MAX_ITEMS)
+      .skip((page-1)*MAX_ITEMS);
   }
-  res.status(200).json({ status: "OK", data: experienceList });
+  const numDocuments = await Experience.countDocuments();
+  res.status(200).json({ status: "OK", data: experienceList, maxPageNum: Math.ceil(numDocuments / MAX_ITEMS) });
 });
 
 exports.uploadExpImages = catchAsync(async (req, res, next) => {
