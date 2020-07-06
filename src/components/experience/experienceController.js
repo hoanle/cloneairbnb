@@ -332,7 +332,8 @@ exports.createFakeExperiences = catchAsync(async (request, response, next) => {
       tagId = tagsObjects[5]._id;
     }
 
-    const randomImageCount = Math.floor(Math.random() * 5);
+    let randomImageCount = Math.floor(Math.random() * 5);
+    if (randomImageCount == 0) randomImageCount = 2;
     const fakeExperience = new Experience({
       title: faker.lorem.sentence(),
       location: faker.address.state(),
