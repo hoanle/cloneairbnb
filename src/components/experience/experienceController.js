@@ -1,6 +1,7 @@
 const Experience = require("./experienceModel");
 const Tag = require("../tag/tagModel");
 const AppError = require("./../error/appError");
+const Globals = require("./../../configs/Globals");
 
 const { catchAsync } = require("./../error/errorController");
 const fs = require("fs");
@@ -15,6 +16,7 @@ exports.createExperience = catchAsync(async function (req, res, next) {
     description,
     tags,
     languages,
+    groupSize
   } = req.body;
   if (
     !title ||
@@ -23,7 +25,8 @@ exports.createExperience = catchAsync(async function (req, res, next) {
     !duration ||
     !location ||
     !price ||
-    !languages
+    !languages ||
+    !groupSize
   ) {
     return next(
       new AppError(
@@ -90,5 +93,67 @@ exports.uploadExpImages = catchAsync(async (req, res, next) => {
   res.status(200).json({
     message: "images uploaded successfully",
     data: urls,
+  });
+});
+
+exports.searchExperiences = catchAsync(async (request, response, next) => {
+  const {
+    tags,
+    priceMin,
+    priceMax,
+    durationMin,
+    durationMax,
+    languages,
+    averageRatingMin,
+    groupSizeMax,
+    page,
+  } = request.query;
+
+  let queries = [];
+  if (tags) {
+    let tagsQuery = { tags: { $in: tags } };
+    queries.push(tagsQuery);
+  }
+  if (priceMin) {
+    let priceMinQuery = { price: { $gte: priceMin } };
+    queries.push(priceMinQuery);
+  }
+  if (priceMax) {
+    let priceMaxQuery = { price: { $lte: priceMax } };
+    queries.push(priceMaxQuery);
+  }
+  if (durationMin) {
+    let durationMinQuery = { duration: { $gte: durationMin } };
+    queries.push(durationMinQuery);
+  }
+  if (durationMax) {
+    let durationMaxQuery = { duration: { $lte: durationMax } };
+    queries.push(durationMaxQuery);
+  }
+  if (languages) {
+    let lans = languages.split(',')
+    let languagesQuery = { languages: { $in: lans } };
+    queries.push(languagesQuery);
+  }
+  if (averageRatingMin) {
+    let averageRatingQuery = { averageRating: { $gte: averageRating } };
+    queries.push(averageRatingQuery);
+  }
+  if (groupSizeMax) {
+    let groupSizeQuery = { groupSize: {$lte: groupSizeMax} };
+    queries.push(groupSizeQuery);
+  }
+
+  console.log(queries);
+  const finalQuery = queries.length == 0 ?  {} : { $and: queries }
+  const pageNum = page || 1;
+  const skip = (pageNum - 1) * Globals.perPage;
+  const experienceList = await Experience.find(finalQuery)
+    .skip(skip)
+    .limit(Globals.perPage);
+
+  response.status(200).json({
+    status: "success",
+    data: experienceList,
   });
 });

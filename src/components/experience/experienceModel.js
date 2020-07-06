@@ -71,6 +71,11 @@ const expSchema = mongoose.Schema({
       required: [true, "Include tags please!"],
     },
   ],
+  groupSize: {
+    type: Number, 
+    min: 1, 
+    default: 1
+  }
 });
 
 expSchema.statics.permits = function (params) {
@@ -82,7 +87,8 @@ expSchema.statics.permits = function (params) {
     "description",
     "languages",
     "userId",
-    "imageUrls"
+    "imageUrls",
+    "groupSize"
   ];
   let results = {};
   permits

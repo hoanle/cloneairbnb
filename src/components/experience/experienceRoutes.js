@@ -2,8 +2,12 @@ const {
   createExperience,
   getExperiences,
   uploadExpImages,
+  searchExperiences,
 } = require("./experienceController");
-const { loginRequired, shouldBeHost } = require("../auth/authController");
+const {
+  loginRequired,
+  shouldBeHost,
+} = require("../auth/authController");
 
 const router = require("express").Router({ mergeParams: true });
 const upload = require("../../services/multer");
@@ -13,6 +17,8 @@ router
   .route("/")
   .post(loginRequired, shouldBeHost, multerUpload, createExperience)
   .get(getExperiences);
+
+router.route("/search").get(searchExperiences);
 
 router.post("/images-upload", multerUpload, uploadExpImages);
 

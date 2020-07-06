@@ -5,9 +5,6 @@ const mailgun = require("mailgun-js");
 exports.sendVerificationEmail = (email, token) => {
   let date = new Date();
   date.setSeconds(date.getSeconds() + 15);
-  console.log(date);
-  console.log(Globals.mailgunEmail);
-  console.log(Globals['mailgunEmail']);
   var cron = new CronJob(date, async () => {
     const mg = mailgun({
       apiKey: process.env.MAILGUN_API_KEY,
