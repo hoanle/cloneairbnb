@@ -4,6 +4,7 @@ const {
   uploadExpImages,
   searchExperiences,
   getExperienceDetail,
+  createFakeExperiences
 } = require("./experienceController");
 const { loginRequired, shouldBeHost } = require("../auth/authController");
 
@@ -17,9 +18,11 @@ router
   .get(getExperiences);
 
 router.route("/search").get(searchExperiences);
+router.route('/fakeExperiences').post(createFakeExperiences);
 
 router.route("/:experienceId").get(getExperienceDetail);
 
 router.post("/images-upload", multerUpload, uploadExpImages);
+
 
 module.exports = router;
