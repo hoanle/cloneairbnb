@@ -77,15 +77,13 @@ exports.uploadExpImages = catchAsync(async (req, res, next) => {
   const files = req.files;
   for (const file of files) {
     const { path } = file;
-    const newPath = await cloudinary.uploads(path, "Images");
+    const newPath = await cloudinary.uploadSingleFile(path, "Images");
     urls.push(newPath);
     fs.unlinkSync(path);
   }
 
   const exp = await Experience.findOne({ _id: req.body.id });
-  exp.images.forEach((element) => {
-    exp.images.push(element);
-  });
+  urls.map(x => exp.images.push(x));
   await exp.save();
   res.status(200).json({
     message: "images uploaded successfully",
