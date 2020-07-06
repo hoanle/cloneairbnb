@@ -80,3 +80,11 @@ To clone AirBnb
     >  { "status": "success", "data": [ { "nRating": 0, "imageUrls": [], "languages": [], "tags": [ { "_id": "5f0161d44cb7617b14263c7b", "tag": "autumn camp" }, { "_id": "5f0160a0be426c7a1f4f25b0", "tag": "summer camp" } ], "groupSize": 1, "_id": "5f0161d44cb7617b14263c7c", "title": "This is an experience 3", "location": "vn", "price": 1000, "duration": 60, "description": "This is a description 3", "userId": "5efd8f6dcda56f42e0ecfee9", "images": [], "__v": 0 } ] }
   - **Returns error**
     > { "code": 400, "status": "fail", "message": "Something broken" } 
+- #### Get experience detaul
+  - **path**: /experiences/:experienceId (GET)
+  - **params** :  
+  - **sample request**: https://localhost:5000/experiences/5f0161bd4cb7617b14263c79
+  - **return success** : 
+    >  { "status": "success", "data": { "experience": { "nRating": 0, "imageUrls": [], "languages": [], "tags": [ { "_id": "5f0160a0be426c7a1f4f25af", "tag": "winter camp" }, { "_id": "5f0161452d8ca57ad0a4a8e3", "tag": "spring camp" } ], "groupSize": 1, "_id": "5f0161bd4cb7617b14263c79", "title": "This is an experience 2", "location": "vn", "price": 200, "duration": 60, "description": "This is a description 2", "userId": { "_id": "5efd8f6dcda56f42e0ecfee9", "name": "Le Hoan" }, "images": [], "__v": 0 } } }
+  - **Returns error**
+    > { "code": 404, "status": "fail", "message": "Can not find experience with id 5f0161bd4cb7617b14263e79" }

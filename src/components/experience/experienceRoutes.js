@@ -3,6 +3,7 @@ const {
   getExperiences,
   uploadExpImages,
   searchExperiences,
+  getExperienceDetail
 } = require("./experienceController");
 const {
   loginRequired,
@@ -17,6 +18,8 @@ router
   .route("/")
   .post(loginRequired, shouldBeHost, multerUpload, createExperience)
   .get(getExperiences);
+
+router.route('/:experienceId').get(getExperienceDetail);
 
 router.route("/search").get(searchExperiences);
 

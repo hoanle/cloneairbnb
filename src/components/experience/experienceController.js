@@ -16,7 +16,7 @@ exports.createExperience = catchAsync(async function (req, res, next) {
     description,
     tags,
     languages,
-    groupSize
+    groupSize,
   } = req.body;
   if (
     !title ||
@@ -111,7 +111,7 @@ exports.searchExperiences = catchAsync(async (request, response, next) => {
 
   let queries = [];
   if (tags) {
-    let tagArray = tags.split(',')
+    let tagArray = tags.split(",");
     const tagsObjects = await Tag.findTags(tagArray);
     const tagIds = tagsObjects.filter(Boolean).map((x) => x._id);
     let tagsQuery = { tags: { $in: tagIds } };
@@ -134,7 +134,7 @@ exports.searchExperiences = catchAsync(async (request, response, next) => {
     queries.push(durationMaxQuery);
   }
   if (languages) {
-    let lans = languages.split(',')
+    let lans = languages.split(",");
     let languagesQuery = { languages: { $in: lans } };
     queries.push(languagesQuery);
   }
@@ -143,20 +143,53 @@ exports.searchExperiences = catchAsync(async (request, response, next) => {
     queries.push(averageRatingQuery);
   }
   if (groupSizeMax) {
-    let groupSizeQuery = { groupSize: {$lte: groupSizeMax} };
+    let groupSizeQuery = { groupSize: { $lte: groupSizeMax } };
     queries.push(groupSizeQuery);
   }
 
   console.log(queries);
-  const finalQuery = queries.length == 0 ?  {} : { $and: queries }
+  const finalQuery = queries.length == 0 ? {} : { $and: queries };
   const pageNum = page || 1;
   const skip = (pageNum - 1) * Globals.perPage;
   const experienceList = await Experience.find(finalQuery)
     .skip(skip)
-    .limit(Globals.perPage).populate('tags', 'tag').populate('host', 'name');
+    .limit(Globals.perPage)
+    .populate("tags", "tag")
+    .populate("host", "name");
 
   response.status(200).json({
     status: "success",
     data: experienceList,
+  });
+});
+
+exports.getExperienceDetail = catchAsync(async (request, response, next) => {
+  const  experienceId  = request.params.experienceId;
+
+  if (!experienceId) {
+    return next(new AppError(400, "Experience id is required"));
+  }
+  const experience = await Experience.findById(experienceId);
+
+  if (!experience) {
+    return next(
+      new AppError(404, `Can not find experience with id ${experienceId}`)
+    );
+  }
+
+  await experience
+    .populate({
+      path: "userId",
+      select: "_id name",
+    })
+    .populate({
+      path: "tags",
+      select: "_id tag",
+    })
+    .execPopulate();
+
+  response.status(200).json({
+    status: "success",
+    data: { experience },
   });
 });
