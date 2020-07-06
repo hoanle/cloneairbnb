@@ -111,7 +111,10 @@ exports.searchExperiences = catchAsync(async (request, response, next) => {
 
   let queries = [];
   if (tags) {
-    let tagsQuery = { tags: { $in: tags } };
+    let tagArray = tags.split(',')
+    const tagsObjects = await Tag.findTags(tagArray);
+    const tagIds = tagsObjects.filter(Boolean).map((x) => x._id);
+    let tagsQuery = { tags: { $in: tagIds } };
     queries.push(tagsQuery);
   }
   if (priceMin) {
@@ -150,7 +153,7 @@ exports.searchExperiences = catchAsync(async (request, response, next) => {
   const skip = (pageNum - 1) * Globals.perPage;
   const experienceList = await Experience.find(finalQuery)
     .skip(skip)
-    .limit(Globals.perPage);
+    .limit(Globals.perPage).populate('tags', 'tag').populate('host', 'name');
 
   response.status(200).json({
     status: "success",
