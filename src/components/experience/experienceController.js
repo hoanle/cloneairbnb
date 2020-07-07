@@ -160,7 +160,8 @@ exports.searchExperiences = catchAsync(async (request, response, next) => {
     .limit(perPageNum)
     .populate("tags", "tag")
     .populate("host", "name");
-  const maxCount = await Experience.countDocuments();
+   
+  const maxCount = await Experience.count(finalQuery);
   const totalPages = Math.floor((maxCount - 1) / perPageNum) + 1;
   let pagination = { pageNum, perPageNum, totalPages };
   response.status(200).json({
