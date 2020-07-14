@@ -35,6 +35,7 @@ exports.uploadsMultiFiles = async (files, folder) => {
         cloudinary.uploader.upload(
           file.path,
           (result) => {
+            console.log(`url ${result.url}`);
             resolve({
               url: result.url,
               public_id: result.public_id,
@@ -49,7 +50,6 @@ exports.uploadsMultiFiles = async (files, folder) => {
       return await promise;
     });
     const results = Promise.all(allPromises);
-    console.log(results);
     return results;
   }
 };

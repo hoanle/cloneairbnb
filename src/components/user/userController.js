@@ -13,7 +13,7 @@ exports.createUser = catchAsync(async (request, response, next) => {
   const permits = User.permits(request.body);
   const user = await User.create({...permits, role: "user" });
   const token = await user.generateToken();
-  const verificationToken = await user.generateVerificationToken(user);
+  const verificationToken = await user.generateVerificationToken();
   sendVerificationEmail(email, verificationToken);
 
   if (request.files && request.files.length > 0) {

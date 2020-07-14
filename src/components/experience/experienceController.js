@@ -19,6 +19,7 @@ exports.createExperience = catchAsync(async function (req, res, next) {
     languages,
     groupSize,
   } = req.body;
+  console.log(tags)
   if (
     !title ||
     !description ||
@@ -36,7 +37,7 @@ exports.createExperience = catchAsync(async function (req, res, next) {
       )
     );
   }
-
+  
   const tagsObj = await Tag.generateTags(tags);
   const permits = Experience.permits(req.body);
 

@@ -1,4 +1,5 @@
 const { catchAsync } = require("./../error/errorController");
+const axios = require("axios");
 const AppError = require("./../error/appError");
 const User = require("./../user/userModel");
 const bcrypt = require("bcrypt");
@@ -57,7 +58,7 @@ exports.loginRequired = catchAsync(async (request, response, next) => {
 });
 
 exports.loginByFacebok = passport.authenticate("facebook", {
-  scope: ["email", 'public_profile'],
+  scope: ["email", "public_profile"],
 });
 exports.facebookAuthHandler = async (request, response, next) => {
   passport.authenticate("facebook", async (error, profile) => {
@@ -73,9 +74,9 @@ exports.facebookAuthHandler = async (request, response, next) => {
       name: `${first_name} ${last_name}`,
       verified: true,
       avatar: {
-        url: picture.data.url, 
-        public_id: null
-      }
+        url: picture.data.url,
+        public_id: null,
+      },
     });
     const token = await user.generateToken();
     response.status(200).json({
@@ -103,9 +104,9 @@ exports.googleAuthHandler = (request, response, next) => {
       name: name,
       verified: true,
       avatar: {
-        url: picture, 
-        public_id: null
-      }
+        url: picture,
+        public_id: null,
+      },
     });
     const token = await user.generateToken();
     response.status(200).json({
@@ -147,4 +148,37 @@ exports.shouldBeHost = catchAsync(async (request, response, next) => {
     });
   }
   next();
+});
+
+exports.loginWithFacebook = catchAsync(async (request, response, next) => {
+  const { fbToken } = request.body;
+
+  if (!fbToken) {
+    return next(new AppError(400, "Facebook token is missing"));
+  }
+
+  const data = await axios.get(
+    `https://graph.facebook.com/v7.0/me?fields=id%2Cname%2Cpicture%2C%20email&access_token=${fbToken}`
+  );
+  const info = data.data;
+  console.log(info);
+  const { name, email } = info;
+  if (!email) {
+    return next(new AppError(401, "No email found in your FB account"));
+  }
+
+  const user = await User.findOrCreateOne({
+    email: email,
+    name: name,
+    verified: true,
+    avatar: {
+      url: info.picture.data.url,
+      public_id: null,
+    },
+  });
+  const token = await user.generateToken();
+  response.status(200).json({
+    status: "success",
+    data: { user, token },
+  });
 });

@@ -8,12 +8,14 @@ const {
   facebookAuthHandler,
   loginGoogle,
   googleAuthHandler,
-  verifyEmail
+  verifyEmail,
+  loginWithFacebook
 } = require("./authController");
 
 router.route("/login").post(login);
 router.route("/logout").post(loginRequired, logout);
 
+router.route('/loginWithFacebook').post(loginWithFacebook);
 router.route("/facebook/login").get(loginByFacebok);
 router.route("/facebook/authorized").get(facebookAuthHandler);
 
